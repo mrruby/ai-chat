@@ -8,6 +8,7 @@ import {
   useMotionValue,
   useTransform,
 } from 'framer-motion';
+import type { ReactNode, RefObject } from 'react';
 import {
   type Dispatch,
   memo,
@@ -46,7 +47,7 @@ type ToolProps = {
     | 'add-comments'
     | 'add-logs';
   description: string;
-  icon: JSX.Element;
+  icon: ReactNode;
   selectedTool: string | null;
   setSelectedTool: Dispatch<SetStateAction<string | null>>;
   isToolbarVisible?: boolean;
@@ -293,7 +294,7 @@ const toolsByBlockKind: Record<
       | 'add-comments'
       | 'add-logs';
     description: string;
-    icon: JSX.Element;
+    icon: ReactNode;
   }>
 > = {
   text: [
@@ -408,12 +409,12 @@ const PureToolbar = ({
   blockKind: 'text' | 'code';
 }) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  useOnClickOutside(toolbarRef, () => {
+  useOnClickOutside(toolbarRef as RefObject<HTMLElement>, () => {
     setIsToolbarVisible(false);
     setSelectedTool(null);
   });

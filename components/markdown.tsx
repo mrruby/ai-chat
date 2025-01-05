@@ -5,8 +5,16 @@ import remarkGfm from 'remark-gfm';
 import { CodeBlock } from './code-block';
 
 const components: Partial<Components> = {
-  // @ts-expect-error
-  code: CodeBlock,
+  code: ({ className, children, ...props }) => (
+    <CodeBlock
+      className={className || ''}
+      inline={false}
+      node={null}
+      {...props}
+    >
+      {children}
+    </CodeBlock>
+  ),
   pre: ({ children }) => <>{children}</>,
   ol: ({ node, children, ...props }) => {
     return (
@@ -36,13 +44,14 @@ const components: Partial<Components> = {
       </span>
     );
   },
-  a: ({ node, children, ...props }) => {
+  a: ({ node, children, href, ...props }) => {
+    if (!href) return null;
     return (
-      // @ts-expect-error
       <Link
         className="text-blue-500 hover:underline"
         target="_blank"
         rel="noreferrer"
+        href={href}
         {...props}
       >
         {children}
